@@ -186,29 +186,8 @@ CREATE TRIGGER handle_updated_at_contacts
   BEFORE UPDATE ON public.contacts
   FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
--- Insert some sample data
--- Note: Only insert demo profile since auth.uid() requires authentication
-INSERT INTO public.profiles (id, username, full_name, bio)
-VALUES 
-  (gen_random_uuid(), 'demo', 'Demo User', 'This is a demo profile');
-
--- Insert sample projects
-INSERT INTO public.projects (user_id, title, description, status, tags)
-VALUES 
-  ((SELECT id FROM public.profiles WHERE username = 'demo'), 'Welcome Project', 'This is a sample project to get you started', 'published', ARRAY['sample', 'welcome']),
-  ((SELECT id FROM public.profiles WHERE username = 'demo'), 'Demo Project', 'A demonstration project', 'published', ARRAY['demo', 'example']);
-
--- Insert sample posts
-INSERT INTO public.posts (user_id, project_id, title, content, excerpt, slug, status, tags)
-VALUES 
-  ((SELECT id FROM public.profiles WHERE username = 'demo'), 
-   (SELECT id FROM public.projects WHERE title = 'Welcome Project'),
-   'Welcome to Xaab!', 
-   'This is your first post. You can edit or delete it from the admin panel.',
-   'Welcome to your new Next.js + Supabase project!',
-   'welcome-to-xaab',
-   'published',
-   ARRAY['welcome', 'getting-started']);
+-- Sample data will be inserted after user authentication
+-- The tables are ready for use once users sign up through Supabase Auth
 
 -- Create indexes for better performance
 CREATE INDEX idx_projects_user_id ON public.projects(user_id);

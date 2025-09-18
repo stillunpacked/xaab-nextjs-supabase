@@ -30,6 +30,8 @@ export default function SupabaseExample() {
         setMessage("✅ Supabase is connected! Database tables are ready.");
         if (data && data.length > 0) {
           setMessage(`✅ Found ${data.length} project(s) in database!`);
+        } else {
+          setMessage("✅ Database connected! No projects yet - ready for your first data!");
         }
       }
     } catch {
