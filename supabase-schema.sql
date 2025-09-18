@@ -1,8 +1,7 @@
 -- Xaab Project Database Schema
 -- Run these commands in your Supabase SQL Editor
 
--- Enable Row Level Security
-ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
+-- Note: JWT secret is automatically managed by Supabase
 
 -- Create users table (extends Supabase auth.users)
 CREATE TABLE public.profiles (
@@ -188,21 +187,21 @@ CREATE TRIGGER handle_updated_at_contacts
   FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
 -- Insert some sample data
+-- Note: Only insert demo profile since auth.uid() requires authentication
 INSERT INTO public.profiles (id, username, full_name, bio)
 VALUES 
-  (auth.uid(), 'admin', 'Admin User', 'Welcome to Xaab!'),
   (gen_random_uuid(), 'demo', 'Demo User', 'This is a demo profile');
 
 -- Insert sample projects
 INSERT INTO public.projects (user_id, title, description, status, tags)
 VALUES 
-  ((SELECT id FROM public.profiles WHERE username = 'admin'), 'Welcome Project', 'This is a sample project to get you started', 'published', ARRAY['sample', 'welcome']),
+  ((SELECT id FROM public.profiles WHERE username = 'demo'), 'Welcome Project', 'This is a sample project to get you started', 'published', ARRAY['sample', 'welcome']),
   ((SELECT id FROM public.profiles WHERE username = 'demo'), 'Demo Project', 'A demonstration project', 'published', ARRAY['demo', 'example']);
 
 -- Insert sample posts
 INSERT INTO public.posts (user_id, project_id, title, content, excerpt, slug, status, tags)
 VALUES 
-  ((SELECT id FROM public.profiles WHERE username = 'admin'), 
+  ((SELECT id FROM public.profiles WHERE username = 'demo'), 
    (SELECT id FROM public.projects WHERE title = 'Welcome Project'),
    'Welcome to Xaab!', 
    'This is your first post. You can edit or delete it from the admin panel.',
