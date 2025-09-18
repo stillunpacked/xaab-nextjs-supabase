@@ -19,22 +19,16 @@ export default function Home() {
       }
 
       try {
-        // Test connection by getting the current user (this works without any tables)
-        const { data, error } = await supabase.auth.getUser();
+        // Test connection by querying our projects table
+        const { data, error } = await supabase
+          .from('projects')
+          .select('id, title, status')
+          .limit(1);
+        
         if (error) {
-          // If auth fails, try a simple query to test connection
-          const { error: queryError } = await supabase
-            .from('information_schema.tables')
-            .select('table_name')
-            .limit(1);
-          
-          if (queryError) {
-            setConnectionStatus(`❌ Supabase connection error: ${queryError.message}`);
-          } else {
-            setConnectionStatus("✅ Supabase connected successfully!");
-          }
+          setConnectionStatus(`❌ Supabase connection error: ${error.message}`);
         } else {
-          setConnectionStatus("✅ Supabase connected successfully!");
+          setConnectionStatus("✅ Supabase connected successfully! Database tables are ready.");
         }
       } catch {
         setConnectionStatus("❌ Failed to connect to Supabase");

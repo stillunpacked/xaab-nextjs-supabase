@@ -18,22 +18,19 @@ export default function SupabaseExample() {
     }
     
     try {
-      // Test connection by getting the current user (this works without any tables)
-      const { data, error } = await supabase.auth.getUser();
+      // Test connection by querying our projects table
+      const { data, error } = await supabase
+        .from('projects')
+        .select('id, title, status')
+        .limit(1);
+      
       if (error) {
-        // If auth fails, try a simple query to test connection
-        const { error: queryError } = await supabase
-          .from('information_schema.tables')
-          .select('table_name')
-          .limit(1);
-        
-        if (queryError) {
-          setMessage(`❌ Error: ${queryError.message}`);
-        } else {
-          setMessage("✅ Supabase is connected! (Using system tables)");
-        }
+        setMessage(`❌ Error: ${error.message}`);
       } else {
-        setMessage("✅ Supabase is connected and working!");
+        setMessage("✅ Supabase is connected! Database tables are ready.");
+        if (data && data.length > 0) {
+          setMessage(`✅ Found ${data.length} project(s) in database!`);
+        }
       }
     } catch {
       setMessage("❌ Connection failed. Check your environment variables.");
