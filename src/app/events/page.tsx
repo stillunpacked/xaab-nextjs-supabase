@@ -319,7 +319,7 @@ export default function Events() {
       <section className="py-16 bg-blue-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Don't Miss Out!
+            Don&apos;t Miss Out!
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Stay updated with our latest events and be the first to know about upcoming activities.

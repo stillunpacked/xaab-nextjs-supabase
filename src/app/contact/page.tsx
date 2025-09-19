@@ -130,7 +130,7 @@ export default function Contact() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Get in touch with us. We'd love to hear from you and answer any questions you may have.
+              Get in touch with us. We&apos;d love to hear from you and answer any questions you may have.
             </motion.p>
           </div>
         </div>
@@ -184,7 +184,7 @@ export default function Contact() {
                 Send us a Message
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Have a question or want to get in touch? Fill out the form below and we'll get back to you as soon as possible.
+                Have a question or want to get in touch? Fill out the form below and we&apos;ll get back to you as soon as possible.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
