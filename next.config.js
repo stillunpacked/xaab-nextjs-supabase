@@ -13,14 +13,6 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'vercel.app'],
   },
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
 }
 
 module.exports = nextConfig
