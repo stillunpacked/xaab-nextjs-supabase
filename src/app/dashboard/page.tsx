@@ -23,7 +23,8 @@ import {
   FileText,
   Globe,
   Shield,
-  Bell
+  Bell,
+  ArrowRight
 } from "lucide-react";
 
 export default function Dashboard() {

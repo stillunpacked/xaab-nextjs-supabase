@@ -10,7 +10,7 @@ import {
   Globe, 
   GraduationCap,
   Lightbulb,
-  Handshake,
+  Users2,
   BookOpen,
   Trophy
 } from "lucide-react";
@@ -50,7 +50,7 @@ export default function About() {
       description: "We encourage innovative thinking and support entrepreneurial ventures."
     },
     {
-      icon: <Handshake className="w-8 h-8 text-blue-500" />,
+      icon: <Users2 className="w-8 h-8 text-blue-500" />,
       title: "Collaboration",
       description: "We believe in the power of collaboration and mutual support."
     },

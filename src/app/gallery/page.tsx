@@ -17,7 +17,8 @@ import {
   Share2,
   ExternalLink,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  X
 } from "lucide-react";
 
 export default function Gallery() {
