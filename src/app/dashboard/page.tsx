@@ -27,10 +27,39 @@ import {
   ArrowRight
 } from "lucide-react";
 
+interface DashboardOverview {
+  pages: { total: number; published: number; draft: number };
+  news: { total: number; published: number; draft: number };
+  events: { total: number; published: number; upcoming: number };
+  galleries: { total: number; published: number; featured: number };
+  totalViews: number;
+}
+
+interface ContentItem {
+  _id: string;
+  title: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  author?: {
+    name: string;
+  };
+}
+
+interface DashboardData {
+  overview: DashboardOverview;
+  recentContent: {
+    pages: ContentItem[];
+    news: ContentItem[];
+    events: ContentItem[];
+    galleries: ContentItem[];
+  };
+}
+
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [dashboardData, setDashboardData] = useState({
+  const [dashboardData, setDashboardData] = useState<DashboardData>({
     overview: {
       pages: { total: 0, published: 0, draft: 0 },
       news: { total: 0, published: 0, draft: 0 },

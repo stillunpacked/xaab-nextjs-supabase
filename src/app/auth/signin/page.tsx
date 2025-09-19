@@ -45,7 +45,7 @@ export default function SignIn() {
     }
   };
 
-  const handleEmailSignIn = async (e) => {
+  const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setError("Please fill in all fields");

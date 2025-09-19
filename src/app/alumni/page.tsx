@@ -20,8 +20,23 @@ import {
   Briefcase
 } from "lucide-react";
 
+interface AlumniMember {
+  _id: string;
+  name: string;
+  email: string;
+  profilePicture?: string;
+  batch: string;
+  graduationYear: number;
+  company: string;
+  position: string;
+  currentPosition?: string;
+  location: string;
+  linkedin?: string;
+  bio?: string;
+}
+
 export default function Alumni() {
-  const [alumni, setAlumni] = useState([]);
+  const [alumni, setAlumni] = useState<AlumniMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     batch: '',
@@ -91,7 +106,7 @@ export default function Alumni() {
     { value: '2024', label: '2024' }
   ];
 
-  const getInitials = (name) => {
+  const getInitials = (name: string) => {
     return name
       .split(' ')
       .map(word => word.charAt(0))
