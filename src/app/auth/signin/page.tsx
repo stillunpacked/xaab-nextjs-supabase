@@ -34,19 +34,7 @@ export default function SignIn() {
   }, [router]);
 
   const handleGoogleSignIn = async () => {
-    try {
-      setIsLoading(true);
-      setError("");
-      const result = await signIn("google", { callbackUrl: "/dashboard", redirect: false });
-      
-      if (result?.error) {
-        setError("Google sign-in is not configured. Please use email/password instead.");
-      }
-    } catch (err) {
-      setError("Google sign-in is not available. Please use email/password instead.");
-    } finally {
-      setIsLoading(false);
-    }
+    setError("Google sign-in is not available. Please use email/password instead.");
   };
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
@@ -59,19 +47,28 @@ export default function SignIn() {
     try {
       setIsLoading(true);
       setError("");
+      console.log("Attempting to sign in with:", { email, password });
+      
       const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
 
+      console.log("Sign in result:", result);
+
       if (result?.error) {
-        setError("Invalid email or password");
-      } else {
+        setError(`Sign in failed: ${result.error}`);
+      } else if (result?.ok) {
         setSuccess("Sign in successful! Redirecting...");
-        router.push("/dashboard");
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 1000);
+      } else {
+        setError("Sign in failed. Please check your credentials.");
       }
     } catch (err) {
+      console.error("Sign in error:", err);
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);

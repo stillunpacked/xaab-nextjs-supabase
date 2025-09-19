@@ -40,19 +40,7 @@ export default function SignUp() {
   }, [router]);
 
   const handleGoogleSignUp = async () => {
-    try {
-      setIsLoading(true);
-      setError("");
-      const result = await signIn("google", { callbackUrl: "/dashboard", redirect: false });
-      
-      if (result?.error) {
-        setError("Google sign-up is not configured. Please use email/password instead.");
-      }
-    } catch (err) {
-      setError("Google sign-up is not available. Please use email/password instead.");
-    } finally {
-      setIsLoading(false);
-    }
+    setError("Google sign-up is not available. Please use email/password instead.");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
