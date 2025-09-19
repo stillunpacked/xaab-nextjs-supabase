@@ -37,9 +37,13 @@ export default function SignIn() {
     try {
       setIsLoading(true);
       setError("");
-      await signIn("google", { callbackUrl: "/dashboard" });
+      const result = await signIn("google", { callbackUrl: "/dashboard", redirect: false });
+      
+      if (result?.error) {
+        setError("Google sign-in is not configured. Please use email/password instead.");
+      }
     } catch (err) {
-      setError("Failed to sign in with Google. Please try again.");
+      setError("Google sign-in is not available. Please use email/password instead.");
     } finally {
       setIsLoading(false);
     }

@@ -4,10 +4,16 @@ import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    }),
+    // Only add Google provider if credentials are properly configured
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && 
+        process.env.GOOGLE_CLIENT_ID !== "your-google-client-id" && 
+        process.env.GOOGLE_CLIENT_SECRET !== "your-google-client-secret" 
+        ? [GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          })]
+        : []
+    ),
     CredentialsProvider({
       name: "credentials",
       credentials: {
