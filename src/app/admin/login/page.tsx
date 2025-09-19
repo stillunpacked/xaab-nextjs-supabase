@@ -42,7 +42,7 @@ export default function AdminLogin() {
       } else {
         setError("Invalid admin credentials");
       }
-    } catch (err) {
+    } catch (error) {
       setError("Login failed. Please try again.");
     } finally {
       setIsLoading(false);

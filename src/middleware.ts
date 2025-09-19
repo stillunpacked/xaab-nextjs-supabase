@@ -23,7 +23,7 @@ export function middleware(request: NextRequest) {
       if (!session.email || !session.role || session.role !== 'super_admin') {
         return NextResponse.redirect(new URL('/admin/login', request.url))
       }
-    } catch (error) {
+    } catch (err) {
       // Invalid session, redirect to login
       return NextResponse.redirect(new URL('/admin/login', request.url))
     }

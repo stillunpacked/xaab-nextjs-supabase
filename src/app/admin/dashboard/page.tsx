@@ -47,7 +47,11 @@ interface RecentActivity {
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [adminSession, setAdminSession] = useState<any>(null);
+  const [adminSession, setAdminSession] = useState<{
+    email: string;
+    role: string;
+    loginTime: string;
+  } | null>(null);
   const [stats, setStats] = useState<AdminStats>({
     totalAlumni: 0,
     totalEvents: 0,
@@ -116,8 +120,8 @@ export default function AdminDashboard() {
           user: "Admin"
         }
       ]);
-    } catch (error) {
-      console.error("Error loading dashboard data:", error);
+    } catch (err) {
+      console.error("Error loading dashboard data:", err);
     } finally {
       setLoading(false);
     }

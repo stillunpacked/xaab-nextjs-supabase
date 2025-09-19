@@ -124,7 +124,7 @@ export default function ImageUpload({
               <span className="text-sm font-medium">Image selected</span>
             </div>
             <p className="text-xs text-gray-500 mt-2">
-              {selectedImage?.name} ({(selectedImage?.size! / 1024 / 1024).toFixed(2)} MB)
+              {selectedImage?.name} ({selectedImage ? (selectedImage.size / 1024 / 1024).toFixed(2) : '0'} MB)
             </p>
           </div>
         ) : (

@@ -5,16 +5,11 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { 
-  Users, 
   Calendar, 
   Newspaper, 
   Camera, 
-  BarChart3, 
+  Users,
   Settings,
-  Plus,
-  Edit,
-  Trash2,
-  Eye,
   TrendingUp,
   Activity,
   Mail,
@@ -24,55 +19,32 @@ import {
   Globe,
   Shield,
   Bell,
-  ArrowRight
+  ArrowRight,
+  LogOut,
+  Upload,
+  BarChart3
 } from "lucide-react";
+import Link from "next/link";
 
-interface DashboardOverview {
-  pages: { total: number; published: number; draft: number };
-  news: { total: number; published: number; draft: number };
-  events: { total: number; published: number; upcoming: number };
-  galleries: { total: number; published: number; featured: number };
+interface UserStats {
+  totalAlumni: number;
+  totalEvents: number;
+  totalNews: number;
+  totalGalleries: number;
+  totalContacts: number;
   totalViews: number;
 }
 
-interface ContentItem {
-  _id: string;
-  title: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  author?: {
-    name: string;
-  };
-}
-
-interface DashboardData {
-  overview: DashboardOverview;
-  recentContent: {
-    pages: ContentItem[];
-    news: ContentItem[];
-    events: ContentItem[];
-    galleries: ContentItem[];
-  };
-}
-
-export default function Dashboard() {
+export default function UserDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [dashboardData, setDashboardData] = useState<DashboardData>({
-    overview: {
-      pages: { total: 0, published: 0, draft: 0 },
-      news: { total: 0, published: 0, draft: 0 },
-      events: { total: 0, published: 0, upcoming: 0 },
-      galleries: { total: 0, published: 0, featured: 0 },
-      totalViews: 0
-    },
-    recentContent: {
-      pages: [],
-      news: [],
-      events: [],
-      galleries: []
-    }
+  const [stats, setStats] = useState<UserStats>({
+    totalAlumni: 0,
+    totalEvents: 0,
+    totalNews: 0,
+    totalGalleries: 0,
+    totalContacts: 0,
+    totalViews: 0
   });
   const [loading, setLoading] = useState(true);
 
@@ -84,18 +56,31 @@ export default function Dashboard() {
       return;
     }
 
-    fetchDashboardData();
+    // Check if user is admin and redirect to admin dashboard
+    if (session.user?.role === "super_admin") {
+      router.push("/admin/dashboard");
+      return;
+    }
+
+    loadDashboardData();
   }, [session, status, router]);
 
-  const fetchDashboardData = async () => {
+  const loadDashboardData = async () => {
+    setLoading(true);
     try {
-      const response = await fetch("/api/content/dashboard");
-      if (response.ok) {
-        const data = await response.json();
-        setDashboardData(data);
-      }
-    } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+      // Simulate API calls - replace with actual API calls
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setStats({
+        totalAlumni: 156,
+        totalEvents: 23,
+        totalNews: 45,
+        totalGalleries: 12,
+        totalContacts: 89,
+        totalViews: 2340
+      });
+    } catch (err) {
+      console.error("Error loading dashboard data:", err);
     } finally {
       setLoading(false);
     }
@@ -103,8 +88,11 @@ export default function Dashboard() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -113,341 +101,214 @@ export default function Dashboard() {
     return null;
   }
 
-  const quickActions = [
-    {
-      title: "Create Page",
-      description: "Add a new page to the website",
-      icon: <FileText className="w-6 h-6" />,
-      href: "/dashboard/pages/new",
-      color: "bg-blue-500"
-    },
-    {
-      title: "Add News",
-      description: "Publish a news article",
-      icon: <Newspaper className="w-6 h-6" />,
-      href: "/dashboard/news/new",
-      color: "bg-green-500"
-    },
-    {
-      title: "Create Event",
-      description: "Add a new event",
-      icon: <Calendar className="w-6 h-6" />,
-      href: "/dashboard/events/new",
-      color: "bg-purple-500"
-    },
-    {
-      title: "Upload Gallery",
-      description: "Add photos to gallery",
-      icon: <Camera className="w-6 h-6" />,
-      href: "/dashboard/gallery/new",
-      color: "bg-pink-500"
-    }
-  ];
-
-  const stats = [
-    {
-      title: "Total Pages",
-      value: dashboardData.overview.pages.total,
-      change: "+12%",
-      icon: <FileText className="w-8 h-8" />,
-      color: "text-blue-600",
-      bgColor: "bg-blue-100"
-    },
-    {
-      title: "Published News",
-      value: dashboardData.overview.news.published,
-      change: "+8%",
-      icon: <Newspaper className="w-8 h-8" />,
-      color: "text-green-600",
-      bgColor: "bg-green-100"
-    },
-    {
-      title: "Upcoming Events",
-      value: dashboardData.overview.events.upcoming,
-      change: "+5%",
-      icon: <Calendar className="w-8 h-8" />,
-      color: "text-purple-600",
-      bgColor: "bg-purple-100"
-    },
-    {
-      title: "Total Views",
-      value: dashboardData.overview.totalViews.toLocaleString(),
-      change: "+15%",
-      icon: <Eye className="w-8 h-8" />,
-      color: "text-orange-600",
-      bgColor: "bg-orange-100"
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-white shadow">
+      <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600">Welcome back, {session.user?.name}</p>
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center">
+              <Users className="w-8 h-8 text-blue-600 mr-3" />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Welcome, {session.user?.name || session.user?.email}</h1>
+                <p className="text-sm text-gray-600">XISS Alumni Association Bangalore</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-400 hover:text-gray-600">
-                <Bell className="w-6 h-6" />
-              </button>
-              <button className="p-2 text-gray-400 hover:text-gray-600">
-                <Settings className="w-6 h-6" />
-              </button>
+              <Link
+                href="/"
+                className="text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors duration-200"
+              >
+                Back to Home
+              </Link>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
+          {[
+            {
+              title: "Total Alumni",
+              value: stats.totalAlumni,
+              icon: <Users className="w-8 h-8" />,
+              color: "bg-blue-500",
+              change: "+12%"
+            },
+            {
+              title: "Events",
+              value: stats.totalEvents,
+              icon: <Calendar className="w-8 h-8" />,
+              color: "bg-orange-500",
+              change: "+5%"
+            },
+            {
+              title: "News Articles",
+              value: stats.totalNews,
+              icon: <Newspaper className="w-8 h-8" />,
+              color: "bg-green-500",
+              change: "+8%"
+            },
+            {
+              title: "Photo Galleries",
+              value: stats.totalGalleries,
+              icon: <Camera className="w-8 h-8" />,
+              color: "bg-purple-500",
+              change: "+3%"
+            }
+          ].map((stat, index) => (
             <motion.div
-              key={stat.title}
-              className="bg-white rounded-lg shadow p-6"
+              key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="bg-white rounded-xl shadow-lg p-6"
             >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                  <p className="text-sm text-green-600 flex items-center mt-1">
-                    <TrendingUp className="w-4 h-4 mr-1" />
-                    {stat.change}
-                  </p>
+                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-sm text-green-600">{stat.change} from last month</p>
                 </div>
-                <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                  <div className={stat.color}>{stat.icon}</div>
+                <div className={`${stat.color} p-3 rounded-lg text-white`}>
+                  {stat.icon}
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Quick Actions */}
-          <div className="lg:col-span-1">
-            <motion.div
-              className="bg-white rounded-lg shadow p-6"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
-              <div className="space-y-3">
-                {quickActions.map((action, index) => (
-                  <motion.a
-                    key={action.title}
-                    href={action.href}
-                    className="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                  >
-                    <div className={`p-2 rounded-lg ${action.color} text-white mr-3`}>
-                      {action.icon}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{action.title}</p>
-                      <p className="text-sm text-gray-600">{action.description}</p>
-                    </div>
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-          </div>
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="bg-white rounded-xl shadow-lg p-6"
+          >
+            <h3 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h3>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { title: "View Alumni", icon: <Users className="w-6 h-6" />, href: "/alumni" },
+                { title: "Browse Events", icon: <Calendar className="w-6 h-6" />, href: "/events" },
+                { title: "Read News", icon: <Newspaper className="w-6 h-6" />, href: "/news" },
+                { title: "View Gallery", icon: <Camera className="w-6 h-6" />, href: "/gallery" }
+              ].map((action, index) => (
+                <Link
+                  key={index}
+                  href={action.href}
+                  className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200"
+                >
+                  <div className="text-blue-600 mb-2">{action.icon}</div>
+                  <span className="text-sm font-medium text-gray-700">{action.title}</span>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
 
-          {/* Recent Content */}
-          <div className="lg:col-span-2">
-            <motion.div
-              className="bg-white rounded-lg shadow p-6"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Content</h2>
-              <div className="space-y-4">
-                {/* Recent Pages */}
-                {dashboardData.recentContent.pages.slice(0, 3).map((page, index) => (
-                  <div key={page._id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                    <div className="flex items-center">
-                      <FileText className="w-5 h-5 text-blue-600 mr-3" />
-                      <div>
-                        <p className="font-medium text-gray-900">{page.title}</p>
-                        <p className="text-sm text-gray-600">
-                          {page.author?.name} • {new Date(page.updatedAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        page.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {page.status}
-                      </span>
-                      <button className="p-1 text-gray-400 hover:text-gray-600">
-                        <Edit className="w-4 h-4" />
-                      </button>
-                    </div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="bg-white rounded-xl shadow-lg p-6"
+          >
+            <h3 className="text-xl font-semibold text-gray-900 mb-6">Recent Activity</h3>
+            <div className="space-y-4">
+              {[
+                { title: "New alumni registration: John Doe", time: "2 hours ago" },
+                { title: "Event created: Annual Meet 2024", time: "4 hours ago" },
+                { title: "News article published: Alumni Success Story", time: "6 hours ago" }
+              ].map((activity, index) => (
+                <div key={index} className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-900">{activity.title}</p>
+                    <p className="text-xs text-gray-500">{activity.time}</p>
                   </div>
-                ))}
-
-                {/* Recent News */}
-                {dashboardData.recentContent.news.slice(0, 3).map((news, index) => (
-                  <div key={news._id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                    <div className="flex items-center">
-                      <Newspaper className="w-5 h-5 text-green-600 mr-3" />
-                      <div>
-                        <p className="font-medium text-gray-900">{news.title}</p>
-                        <p className="text-sm text-gray-600">
-                          {news.author?.name} • {new Date(news.updatedAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        news.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {news.status}
-                      </span>
-                      <button className="p-1 text-gray-400 hover:text-gray-600">
-                        <Edit className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-
-                {/* Recent Events */}
-                {dashboardData.recentContent.events.slice(0, 3).map((event, index) => (
-                  <div key={event._id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                    <div className="flex items-center">
-                      <Calendar className="w-5 h-5 text-purple-600 mr-3" />
-                      <div>
-                        <p className="font-medium text-gray-900">{event.title}</p>
-                        <p className="text-sm text-gray-600">
-                          {event.organizer?.name} • {new Date(event.eventDate).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        event.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {event.status}
-                      </span>
-                      <button className="p-1 text-gray-400 hover:text-gray-600">
-                        <Edit className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
 
-        {/* Content Management Sections */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-          <motion.div
-            className="bg-white rounded-lg shadow p-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Pages</h3>
-              <FileText className="w-6 h-6 text-blue-600" />
-            </div>
-            <p className="text-3xl font-bold text-gray-900 mb-2">
-              {dashboardData.overview.pages.total}
-            </p>
-            <p className="text-sm text-gray-600">
-              {dashboardData.overview.pages.published} published, {dashboardData.overview.pages.draft} drafts
-            </p>
-            <a
-              href="/dashboard/pages"
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-3"
+        {/* Navigation Sections */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            {
+              title: "Alumni Directory",
+              description: "Connect with fellow XISS alumni",
+              icon: <Users className="w-8 h-8" />,
+              href: "/alumni",
+              color: "bg-blue-500"
+            },
+            {
+              title: "Events",
+              description: "Upcoming events and workshops",
+              icon: <Calendar className="w-8 h-8" />,
+              href: "/events",
+              color: "bg-orange-500"
+            },
+            {
+              title: "News & Updates",
+              description: "Latest news from our community",
+              icon: <Newspaper className="w-8 h-8" />,
+              href: "/news",
+              color: "bg-green-500"
+            },
+            {
+              title: "Photo Gallery",
+              description: "Memories from events and gatherings",
+              icon: <Camera className="w-8 h-8" />,
+              href: "/gallery",
+              color: "bg-purple-500"
+            },
+            {
+              title: "Contact Us",
+              description: "Get in touch with the association",
+              icon: <Mail className="w-8 h-8" />,
+              href: "/contact",
+              color: "bg-red-500"
+            },
+            {
+              title: "About Us",
+              description: "Learn more about XAAB",
+              icon: <FileText className="w-8 h-8" />,
+              href: "/about",
+              color: "bg-gray-500"
+            }
+          ].map((section, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              Manage Pages <ArrowRight className="w-4 h-4 ml-1" />
-            </a>
-          </motion.div>
-
-          <motion.div
-            className="bg-white rounded-lg shadow p-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">News</h3>
-              <Newspaper className="w-6 h-6 text-green-600" />
-            </div>
-            <p className="text-3xl font-bold text-gray-900 mb-2">
-              {dashboardData.overview.news.total}
-            </p>
-            <p className="text-sm text-gray-600">
-              {dashboardData.overview.news.published} published, {dashboardData.overview.news.draft} drafts
-            </p>
-            <a
-              href="/dashboard/news"
-              className="inline-flex items-center text-green-600 hover:text-green-800 font-medium mt-3"
-            >
-              Manage News <ArrowRight className="w-4 h-4 ml-1" />
-            </a>
-          </motion.div>
-
-          <motion.div
-            className="bg-white rounded-lg shadow p-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Events</h3>
-              <Calendar className="w-6 h-6 text-purple-600" />
-            </div>
-            <p className="text-3xl font-bold text-gray-900 mb-2">
-              {dashboardData.overview.events.total}
-            </p>
-            <p className="text-sm text-gray-600">
-              {dashboardData.overview.events.upcoming} upcoming events
-            </p>
-            <a
-              href="/dashboard/events"
-              className="inline-flex items-center text-purple-600 hover:text-purple-800 font-medium mt-3"
-            >
-              Manage Events <ArrowRight className="w-4 h-4 ml-1" />
-            </a>
-          </motion.div>
-
-          <motion.div
-            className="bg-white rounded-lg shadow p-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Gallery</h3>
-              <Camera className="w-6 h-6 text-pink-600" />
-            </div>
-            <p className="text-3xl font-bold text-gray-900 mb-2">
-              {dashboardData.overview.galleries.total}
-            </p>
-            <p className="text-sm text-gray-600">
-              {dashboardData.overview.galleries.featured} featured galleries
-            </p>
-            <a
-              href="/dashboard/gallery"
-              className="inline-flex items-center text-pink-600 hover:text-pink-800 font-medium mt-3"
-            >
-              Manage Gallery <ArrowRight className="w-4 h-4 ml-1" />
-            </a>
-          </motion.div>
+              <Link
+                href={section.href}
+                className="block bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-all duration-300 group"
+              >
+                <div className="flex items-start space-x-4">
+                  <div className={`${section.color} p-3 rounded-lg text-white group-hover:scale-110 transition-transform duration-300`}>
+                    {section.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">
+                      {section.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      {section.description}
+                    </p>
+                    <div className="flex items-center text-blue-600 text-sm font-medium group-hover:text-blue-700">
+                      Explore
+                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
         </div>
       </div>
     </div>
