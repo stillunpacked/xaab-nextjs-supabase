@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { 
@@ -49,7 +49,7 @@ export default function UserDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (status === "loading") return;
+    if (status === "loading") return; // Still loading
     
     if (!session) {
       router.push("/auth/signin");
@@ -62,6 +62,7 @@ export default function UserDashboard() {
       return;
     }
 
+    // User is authenticated, load dashboard data
     loadDashboardData();
   }, [session, status, router]);
 
@@ -97,9 +98,24 @@ export default function UserDashboard() {
     );
   }
 
+  if (status === "loading" || loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!session) {
     return null;
   }
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/" });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -121,6 +137,13 @@ export default function UserDashboard() {
               >
                 Back to Home
               </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center text-sm text-red-600 hover:text-red-800 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors duration-200"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </button>
             </div>
           </div>
         </div>
