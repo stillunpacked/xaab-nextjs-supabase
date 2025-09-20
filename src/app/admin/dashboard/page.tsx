@@ -45,6 +45,8 @@ interface RecentActivity {
   user: string;
 }
 
+export const dynamic = 'force-dynamic';
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [adminSession, setAdminSession] = useState<{

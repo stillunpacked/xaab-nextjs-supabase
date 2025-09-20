@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Shield, Eye, EyeOff, Lock, User } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default function AdminLogin() {
   const [formData, setFormData] = useState({
     email: "",

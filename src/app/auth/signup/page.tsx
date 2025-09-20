@@ -16,6 +16,8 @@ import {
   User
 } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default function SignUp() {
   const [formData, setFormData] = useState({
     name: "",
