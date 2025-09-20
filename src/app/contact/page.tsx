@@ -85,7 +85,7 @@ export default function Contact() {
     {
       icon: <Phone className="w-6 h-6 text-green-600" />,
       title: "Call Us",
-      details: ["+91 98765 43210", "+91 87654 32109"],
+      details: ["+91 99160 94874"],
       description: "Monday to Friday, 9:00 AM to 6:00 PM IST"
     },
     {
@@ -242,7 +242,7 @@ export default function Contact() {
                         value={formData.phone}
                         onChange={handleInputChange}
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="+91 98765 43210"
+                        placeholder="+91 99160 94874"
                       />
                     </div>
                   </div>
@@ -373,7 +373,7 @@ export default function Contact() {
                   </h3>
                   <p className="text-gray-700">
                     For general questions about XAAB, membership, or events, 
-                    please use the contact form or email us at info@xaab.com
+                    please use the contact form or email us at boardmember@xaab.in
                   </p>
                 </div>
 
@@ -383,7 +383,7 @@ export default function Contact() {
                   </h3>
                   <p className="text-gray-700">
                     For media inquiries, press releases, or interview requests, 
-                    please contact us at media@xaab.com
+                    please contact us at treasurer@xaab.in
                   </p>
                 </div>
               </div>
