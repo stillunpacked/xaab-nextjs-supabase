@@ -66,36 +66,36 @@ export default function Home() {
     }
   ];
 
-  const leadership = [
-    {
-      name: "Dr. Rajesh Kumar",
-      position: "President",
-      batch: "1995",
-      company: "TechCorp Solutions",
-      image: "/api/placeholder/200/200"
-    },
-    {
-      name: "Priya Sharma",
-      position: "Vice President",
-      batch: "1998",
-      company: "Global Finance Ltd",
-      image: "/api/placeholder/200/200"
-    },
-    {
-      name: "Amit Patel",
-      position: "Secretary",
-      batch: "2000",
-      company: "Innovation Hub",
-      image: "/api/placeholder/200/200"
-    },
-    {
-      name: "Sneha Reddy",
-      position: "Treasurer",
-      batch: "2002",
-      company: "Digital Ventures",
-      image: "/api/placeholder/200/200"
-    }
-  ];
+      const leadership = [
+        {
+          name: "Amitabh Das",
+          position: "Board Member",
+          batch: "1995",
+          company: "Board Member",
+          image: "/api/placeholder/200/200"
+        },
+        {
+          name: "Prabhash Nirbhay",
+          position: "Board Member",
+          batch: "2002",
+          company: "Board Member",
+          image: "/api/placeholder/200/200"
+        },
+        {
+          name: "Ranjit Singh",
+          position: "Board Member",
+          batch: "2006",
+          company: "Board Member",
+          image: "/api/placeholder/200/200"
+        },
+        {
+          name: "Dhirendra Panda",
+          position: "Board Member",
+          batch: "2013",
+          company: "Board Member",
+          image: "/api/placeholder/200/200"
+        }
+      ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -468,3 +468,4 @@ export default function Home() {
     </div>
   );
 }
+
