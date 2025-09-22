@@ -32,7 +32,8 @@ export default function AdminLogin() {
 
     try {
       // Super admin credentials
-      if (formData.email === "admin@xaab.org" && formData.password === "admin123") {
+      if ((formData.email === "admin@xaab.org" && formData.password === "admin123") ||
+          (formData.email === "boardmembers@xaab.in" && formData.password === "Xiss1214#")) {
         // Store admin session
         localStorage.setItem("adminSession", JSON.stringify({
           email: formData.email,

@@ -24,6 +24,16 @@ export const authOptions: NextAuthOptions = {
           };
         }
 
+        // Check for board members admin credentials
+        if (credentials.email === "boardmembers@xaab.in" && credentials.password === "Xiss1214#") {
+          return {
+            id: "boardmembers",
+            email: "boardmembers@xaab.in",
+            name: "Board Members Admin",
+            role: "super_admin"
+          };
+        }
+
         // Demo user credentials for testing
         if (credentials.email === "user@xaab.org" && credentials.password === "password123") {
           return {
